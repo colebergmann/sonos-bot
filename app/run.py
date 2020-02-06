@@ -20,4 +20,4 @@ def setup():
 if __name__ == "__main__":
     robot = Robot()
     app.debug = True
-    app.run()
+    app.run(use_reloader=False)

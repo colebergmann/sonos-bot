@@ -8,3 +8,4 @@ __pycache__/
 *.sublime-*
 .idea
 *.iml
+*.pyc

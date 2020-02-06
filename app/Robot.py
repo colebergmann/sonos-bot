@@ -12,6 +12,11 @@ class Robot:
     def __init__(self):
         print("robot object constructed")
         self.reset()
+        self.rotational_motor.set_steps(10)
+        self.temperature_motor.set_steps(10)
+
+        self.rotational_motor.set_steps(22)
+        self.temperature_motor.set_steps(22)
 
     def get_status(self):
         return self.status
