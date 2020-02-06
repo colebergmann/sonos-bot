@@ -13,15 +13,14 @@ class StepperMotor:
     # pin for the motor's limit switch
     p_lim_switch = 0
 
-    # number of steps for motor to complete an entire revolution
-    steps_per_rev = 0
+    # Motor name (used for debugging messages)
     label = ""
 
     # track current number of steps we have taken since zero
-    total_steps = 0
+    steps_taken = 0
 
     # constructor
-    def __init__(self, label, p0, p1, p2, p3, p_lim_switch, steps_per_rev):
+    def __init__(self, label, p0, p1, p2, p3, p_lim_switch):
         self.mutex = Lock()
         self.label = label
         self.p0 = p0
@@ -29,9 +28,8 @@ class StepperMotor:
         self.p2 = p2
         self.p3 = p3
         self.p_lim_switch = p_lim_switch
-        self.steps_per_rev = steps_per_rev
         print("DEBUG: [", self.label, "motor ] constructed with p0:", p0, " p1:", p1, " p2:", p2, " p3:", p3,
-              " p_lim_switch:", p_lim_switch, " steps_per_rev:", steps_per_rev)
+              " p_lim_switch:", p_lim_switch)
 
     # public facing set_steps method
     # spawns a thread and calls the synchronous set_steps helper method
@@ -41,7 +39,7 @@ class StepperMotor:
         t1.start()
 
     # private synchronous helper method that sets the steps to a desired quantity
-    # hint: increment the motor (steps - total_steps) times in a loop
+    # hint: increment the motor (steps - steps_taken) times in a loop
     def __set_steps_sync(self, steps):
         self.mutex.acquire()
         print("DEBUG: [", self.label, "] Stepping to ", steps)
@@ -59,7 +57,19 @@ class StepperMotor:
 
         #TODO: refactor this loop to actually make it interact with the hardware
         for i in range(0, 10):
-            print("\t\tRESET: [", self.label, "] Step", i, "/ 10 to zero")
-            time.sleep(.3)
-        
+            # print("\t\tRESET: [", self.label, "] Step", i, "/ 10 to zero")
+            time.sleep(.1)
+
         print("DEBUG: [", self.label, "] Motor reached machine zero")
+
+    # returns the state of this stepper motor
+    def get_state(self):
+        return {
+            "p0": self.p0,
+            "p1": self.p1,
+            "p2": self.p2,
+            "p3": self.p3,
+            "p_lim_switch": self.p_lim_switch,
+            "label": self.label,
+            "steps_taken": self.steps_taken
+        }

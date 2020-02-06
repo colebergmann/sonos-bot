@@ -3,23 +3,20 @@ from threading import Thread
 
 
 class Robot:
-    rotational_motor = StepperMotor("Rotational", 1, 2, 3, 4, 5, 6)
-    pivot_motor = StepperMotor("Pivot", 1, 2, 3, 4, 5, 6)
-    temperature_motor = StepperMotor("Thermostat", 1, 2, 3, 4, 5, 6)
+    rotational_motor = StepperMotor("Rotational", 1, 2, 3, 4, 5)
+    pivot_motor = StepperMotor("Pivot", 1, 2, 3, 4, 5)
+    temperature_motor = StepperMotor("Thermostat", 1, 2, 3, 4, 5)
 
-    status = "resetting"    # status = resetting/ready/running/done
+    status = "resetting"  # status = resetting/ready/running/done
 
     def __init__(self):
         print("robot object constructed")
         self.reset()
-        self.rotational_motor.set_steps(10)
-        self.temperature_motor.set_steps(10)
+        # self.rotational_motor.set_steps(10)
+        # self.temperature_motor.set_steps(10)
 
-        self.rotational_motor.set_steps(22)
-        self.temperature_motor.set_steps(22)
-
-    def get_status(self):
-        return self.status
+        # self.rotational_motor.set_steps(22)
+        # self.temperature_motor.set_steps(22)
 
     def reset(self):
         status = "resetting"
@@ -33,3 +30,12 @@ class Robot:
         t2.join()
         t3.join()
         self.status = "ready"
+
+    # returns json format of Robot's current state
+    def get_state(self):
+        return {
+            "status": self.status,
+            "rotational_motor": self.rotational_motor.get_state(),
+            "pivot_motor": self.pivot_motor.get_state(),
+            "temperature_motor": self.temperature_motor.get_state(),
+        }
