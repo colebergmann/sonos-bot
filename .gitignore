@@ -1,2 +1,10 @@
 .DS_Store
 __pycache__/
+# For various IDEs
+.classpath
+.project
+.settings
+.vscode/
+*.sublime-*
+.idea
+*.iml

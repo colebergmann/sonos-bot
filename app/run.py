@@ -1,13 +1,15 @@
 from flask import render_template, Flask, request
+from Robot import Robot
 
 app = Flask(__name__)
+
+global robot
 
 
 @app.route('/')
 @app.route('/index')
 def index():
     user = {'username': 'test'}
-    print(test)
     return render_template('index.html', title='Home', user=user)
 
 @app.route('/setup')
@@ -16,7 +18,6 @@ def setup():
 
 # start the webserver
 if __name__ == "__main__":
-    print("initiated")
-    test = "hello"
+    robot = Robot()
     app.debug = True
     app.run()
