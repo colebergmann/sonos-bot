@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">f
-    <title>sonos-bot - Setup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>sonos-bot - Overview</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sticky-footer-navbar/">
 
@@ -20,7 +20,7 @@
 
         <!-- navbar -->
         <nav class="navbar navbar-expand-sm navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand" href="">sonos-bot</a>
+            <a class="navbar-brand" href="./">sonos-bot</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -28,7 +28,10 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="">Setup <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="#">Overview <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Report</a>
                     </li>
                 </ul>
             </div>
@@ -38,34 +41,8 @@
     <!-- Begin page content -->
     <main role="main" class="flex-shrink-0">
         <div class="container">
-            <h1 class="mt-5">Trial Setup</h1>
-            <p class="lead">Configure the parameters to begin a trial. You might have some additional information here. This looks better if there are at least two lines of text.</p>
-
-            <div class="setup-params">
-                <!-- lat box-->
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">Latitude</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="33.81" aria-label="latitude">
-                  </div>
-                  <!-- long box-->
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">Longitude</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="-117.92" aria-label="latitude">
-                  </div>
-
-                  <!-- elevation box-->
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">Elevation (m)</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="350" aria-label="latitude">
-                  </div>
-                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="beginTest()">Begin Test</button>
-            </div>
+            <h1 class="mt-5">Trial Overview</h1>
+            <p class="lead">On this page, we would expect to see some parameters and information specific to the trial we are running</p>
         </div>
     </main>
 
@@ -84,11 +61,5 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 </body>
-
-<script>
-    function beginTest() {
-        alert("Begin test!");
-    }
-</script>
 
 </html>
