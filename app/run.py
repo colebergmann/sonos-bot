@@ -29,7 +29,7 @@ def test():
 
 @app.route('/setup/submit', methods=['POST'])
 def submit_params():
-    if (request.args.get("lat") == None || request.args.get("long") == None
+    #if (request.args.get("lat") == None || request.args.get("long") == None
     return request.args
 
 
