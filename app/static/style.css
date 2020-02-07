@@ -1,5 +1,5 @@
 main > .container {
-    padding: 60px 15px 0;
+    padding: 50px 15px 0;
   }
   
   .footer {
@@ -24,4 +24,5 @@ main > .container {
       display:center;
       margin: 0 auto;
       margin-top: 75px;
+      margin-bottom: 25px;
   }
