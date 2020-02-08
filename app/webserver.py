@@ -1,4 +1,4 @@
-from flask import render_template, Flask, request
+from flask import render_template, Flask, request, redirect
 from Robot import Robot
 import pandas as pd
 
@@ -14,12 +14,16 @@ def index_sample():
 
 @app.route('/setup')
 def setup():
+    if robot.get_status() != 'ready':
+        return redirect("index", code=303)
     return render_template('setup.html', title='Setup')
 
 
 @app.route('/')
 @app.route('/index')
 def home():
+    if robot.get_status() == 'ready':
+        return redirect("setup", code=303)
     return render_template('home.html', title='Setup')
 
 
@@ -30,21 +34,23 @@ def test():
 
 @app.route('/setup/submit', methods=['POST'])
 def submit_params():
-    if request.json["lat"] is None or request.json["long"] is None or request.json["elevation"] is None \
-            or request.json["date"] is None:
+    if request.json is None:
+        return {"error": "Request is not in JSON format"}
+    if request.json.get("lat") is None or request.json.get("lon") is None or request.json.get("elevation") is None \
+            or request.json.get("date") is None:
         return {"error": "Please fill out all the required fields"}
-    if is_number(request.json["lat"]) is False or is_number(request.json["long"]) is False:
+    if is_number(request.json.get("lat")) is False or is_number(request.json.get("lon")) is False:
         return {"error": "Latitude and longitude must be numbers"}
-    if is_number(request.json["elevation"]) is False:
+    if is_number(request.json.get("elevation")) is False:
         return {"error": "Elevation must be a number"}
     try:
-        pd.to_datetime(request.json["date"], errors='raise')
+        pd.to_datetime(request.json.get("date"), errors='raise')
     except ValueError:
         return {"error": "Invalid date: date must be in format MM/DD/YYYY"}
 
-    # if we got here, then all the inputs were valid
-    # kick off the program and return a success message
-    return {"status":"success"}
+    robot.calculate(request.json.get("lat"), request.json.get("lon"),
+                    request.json.get("elevation"), request.json.get("date"))
+    return {"status": "success"}
 
 
 def is_number(s):

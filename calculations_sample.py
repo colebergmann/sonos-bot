@@ -54,6 +54,7 @@ sky_df = clearsky.ineichen(apparent_zenith, airmass, linke_turbidity, alt, dni_e
 #trim sky df
 sky_df = sky_df.drop(sky_df[sky_df.index < left].index)
 sky_df = sky_df.drop(sky_df[sky_df.index > right].index)
+print(sky_df)
 
 plt.figure();
 

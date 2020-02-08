@@ -43,35 +43,40 @@
             <p class="lead">Configure the parameters to begin a trial. You might have some additional information here. This looks better if there are at least two lines of text.</p>
 
             <div class="setup-params">
+
+                <div class="alert alert-danger" role="alert" id="err" hidden>
+                    <strong>Error: </strong><span id="err-msg">message</span>
+                </div>
+
                 <!-- date picker -->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend date">
-                      <span class="input-group-text" id="basic-addon1">Date</span>
+                      <span class="input-group-text">Date</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="6/5/2020" aria-label="latitude" data-provide="datepicker">
+                    <input type="text" class="form-control" placeholder="MM/DD/YYYY" data-provide="datepicker" id="date">
                   </div>
 
                 <!-- lat box-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">Latitude</span>
+                      <span class="input-group-text">Latitude</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="33.81" aria-label="latitude">
+                    <input type="text" class="form-control" placeholder="Latitude" id="lat">
                   </div>
                   <!-- long box-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">Longitude</span>
+                      <span class="input-group-text">Longitude</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="-117.92" aria-label="latitude">
+                    <input type="text" class="form-control" placeholder="Longitude" id="lon">
                   </div>
 
                   <!-- elevation box-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <span class="input-group-text" id="basic-addon1">Elevation (m)</span>
+                      <span class="input-group-text"">Elevation (m)</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="350" aria-label="latitude">
+                    <input type="text" class="form-control" placeholder="Elevation (meters)" id="elevation">
                   </div>
                 <button type="button" class="btn btn-primary btn-lg btn-block" onclick="beginTest()">Begin Test</button>
             </div>
@@ -83,9 +88,7 @@
             <span class="text-muted">acknowledgements?? - 2020</span>
         </div>
     </footer>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
@@ -97,7 +100,26 @@
 
 <script>
     function beginTest() {
-        alert("Begin test!");
+        $.ajax ({
+            type: "POST",
+            url: '/setup/submit',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                "lat":document.getElementById("lat").value,
+                "lon":document.getElementById("lon").value,
+                "elevation":document.getElementById("elevation").value,
+                "date":document.getElementById("date").value,
+            }),
+            success: function (data) {
+                if (data["error"] != null) {
+                    // we have an error
+                    document.getElementById("err-msg").innerHTML = data["error"]
+                    document.getElementById("err").hidden = false
+                }
+                window.location.href = "../";
+            }
+        })
     }
 </script>
 

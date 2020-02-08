@@ -7,16 +7,19 @@ class Robot:
     pivot_motor = StepperMotor("Pivot", 1, 2, 3, 4, 5)
     temperature_motor = StepperMotor("Thermostat", 1, 2, 3, 4, 5)
 
-    status = "resetting"  # status = resetting/ready/running/done
+    status = "ready"  # status = ready/resetting/calculating/running/done
 
     def __init__(self):
         print("robot object constructed")
-        self.reset()
+        # self.reset()
         # self.rotational_motor.set_steps(10)
         # self.temperature_motor.set_steps(10)
 
         # self.rotational_motor.set_steps(22)
         # self.temperature_motor.set_steps(22)
+
+    def calculate(self, lat, lon, elevation, date):
+        self.status = "calculating"
 
     def reset(self):
         status = "resetting"
@@ -39,3 +42,6 @@ class Robot:
             "pivot_motor": self.pivot_motor.get_state(),
             "temperature_motor": self.temperature_motor.get_state(),
         }
+
+    def get_status(self):
+        return self.status
