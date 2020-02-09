@@ -4,6 +4,7 @@ import pvlib as pvlib
 import matplotlib.pyplot as plt
 import pylab
 
+
 class Model:
 
     solar_df = None
@@ -79,9 +80,3 @@ class Model:
     # returns array of azimuth values at every second
     def get_azimuth_arr(self):
         return self.solar_df[['azimuth']].to_numpy()
-
-
-mdl = Model(34.42,-119.82, 6200, '2019-12-06')
-mdl.trim()
-mdl.show_plots()
-print(mdl.get_azimuth_arr())

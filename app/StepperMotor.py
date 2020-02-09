@@ -56,7 +56,7 @@ class StepperMotor:
         print("DEBUG: [", self.label, "] Resetting motor to zero")
 
         #TODO: refactor this loop to actually make it interact with the hardware
-        time.sleep(8)
+        time.sleep(6)
 
         print("DEBUG: [", self.label, "] Motor reached machine zero")
 

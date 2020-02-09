@@ -1,6 +1,7 @@
 from flask import render_template, Flask, request, redirect
 from Robot import Robot
 import pandas as pd
+from threading import Thread
 
 app = Flask(__name__)
 
@@ -15,7 +16,7 @@ def index_sample():
 @app.route('/setup')
 def setup():
     if robot.get_status() != 'ready':
-        return redirect("index", code=303)
+        return redirect("/", code=303)
     return render_template('setup.html', title='Setup')
 
 
@@ -57,8 +58,9 @@ def submit_params():
     except ValueError:
         return {"error": "Invalid date: date must be in format MM/DD/YYYY"}
 
-    robot.calculate(request.json.get("lat"), request.json.get("lon"),
-                    request.json.get("elevation"), request.json.get("date"))
+    # start the calculations in a separate thread so we aren't clogging up the main thread
+    Thread(target=robot.calculate, args=[float(request.json.get("lat")), float(request.json.get("lon")),
+                                         float(request.json.get("elevation")), request.json.get("date")]).start()
     return {"status": "success"}
 
 
@@ -73,5 +75,5 @@ def is_number(s):
 # start the webserver
 if __name__ == "__main__":
     robot = Robot()
-    app.debug = False
-    app.run(use_reloader=False, threaded=True, host='0.0.0.0')
+    app.debug = True
+    app.run(use_reloader=False, host='0.0.0.0')
