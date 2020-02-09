@@ -116,8 +116,9 @@
                     // we have an error
                     document.getElementById("err-msg").innerHTML = data["error"]
                     document.getElementById("err").hidden = false
+                } else {
+                    window.location.href = "../";
                 }
-                window.location.href = "../";
             }
         })
     }

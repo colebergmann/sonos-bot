@@ -1,5 +1,6 @@
 from StepperMotor import StepperMotor
 from threading import Thread
+import time
 
 
 class Robot:
@@ -20,6 +21,11 @@ class Robot:
 
     def calculate(self, lat, lon, elevation, date):
         self.status = "calculating"
+        time.sleep(5)
+        self.status = "resetting"
+        time.sleep(5)
+        self.status = "running"
+
 
     def reset(self):
         status = "resetting"

@@ -19,11 +19,20 @@ def setup():
     return render_template('setup.html', title='Setup')
 
 
+@app.route('/preparing')
+def preparing():
+    if robot.get_status() != 'resetting' and robot.get_status() != 'calculating':
+        return redirect("/", code=303)
+    return render_template('preparing.html', title='Preparing')
+
+
 @app.route('/')
 @app.route('/index')
 def home():
     if robot.get_status() == 'ready':
         return redirect("setup", code=303)
+    if robot.get_status() == 'resetting' or robot.get_status() == 'calculating':
+        return redirect("preparing", code=303)
     return render_template('home.html', title='Setup')
 
 
@@ -64,5 +73,5 @@ def is_number(s):
 # start the webserver
 if __name__ == "__main__":
     robot = Robot()
-    app.debug = True
-    app.run(use_reloader=False, host='0.0.0.0')
+    app.debug = False
+    app.run(use_reloader=False, threaded=True, host='0.0.0.0')

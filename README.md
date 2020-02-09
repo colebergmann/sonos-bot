@@ -6,6 +6,6 @@ graph values:
 
 flow:
 - user inputs parameters and submits form
-- reset all motors to zero
 - calculate
+- reset all motors to zero
 - start motors
