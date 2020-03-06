@@ -9,3 +9,6 @@ This software is built in Python, using Flask to host a web interface that allow
 - apparent_elevation: heater angle motor
 - azimuth: lazy suzan motor
 - dni: heater temperature motor
+
+- add passcode?
+- white/black selection in setup screen

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <meta name="theme-color" content="#563d7c">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js" rel="stylesheet">
 
 </head>
 
@@ -41,22 +42,50 @@
     <!-- Begin page content -->
     <main role="main" class="flex-shrink-0">
         <div class="container">
-            <h1 class="mt-5">Trial In Progress</h1>
-            <p class="lead">The trial is currently running. <strong>1h 15m</strong> has elapsed, with <strong>9h 48m</strong> remaining.<br>Estimated time of completion: <strong>4:21 PM</strong></p>
+            <h1 class="mt-5" id="head">Trial In Progress</h1>
+            <p class="lead"><strong>1h 15m</strong> has elapsed, with <strong>9h 48m</strong> remaining.<br>Estimated completion: <strong id="completion">-</strong></p>
             <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 75%"></div>
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" id="progress" style="width: 75%"></div>
             </div>
             <br>
-            <p>Parameters: <strong>lat</strong>, <strong>lon</strong> at <strong>5000</strong> m on <strong>6/5/2020</strong>.</p>
+            <p>Parameters: (<strong id="lat"></strong>,<strong id="lon"></strong>) at <strong id="elevation"></strong>m on <strong id="date"></strong>.</p>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopModal">Cancel Test</button>
+            <button type="button" class="btn btn-secondary" onclick="pause()" id="pauseBtn">Pause Trial</button>
+            <button type="button" class="btn btn-success" onclick="resume()" id="resumeBtn" hidden>Resume Trial</button>
             <hr>
         </div>
     </main>
+
 
     <footer class="footer mt-auto py-3">
         <div class="container">
             <span class="text-muted">acknowledgements?? - 2020</span>
         </div>
     </footer>
+
+    <!-- Modal -->
+<div class="modal fade" id="stopModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cancel Test</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          Are you sure you want to cancel the current test? All motors will stop and the recorded data will be discarded.
+          <br><strong>This action can not be reversed.</strong>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="cancel()">Confirm Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -64,6 +93,59 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+
+<script>
+    function pause() {
+        $.post("/setstatus/pause", function(data, status){
+            update();
+              //alert("Done")
+          });
+    }
+    function resume() {
+        $.post("/setstatus/resume", function(data, status){
+              //alert("Done")
+            update();
+          });
+    }
+    function cancel() {
+        $.post("/setstatus/cancel", function(data, status){
+              //alert("Done")
+            update();
+          });
+    }
+
+    function update() {
+        $.get("/state", function(data, status){
+            document.getElementById("completion").innerHTML = data.completion
+            document.getElementById("date").innerHTML = data.date
+            document.getElementById("lat").innerHTML = data.lat
+            document.getElementById("lon").innerHTML = data.lon
+            document.getElementById("elevation").innerHTML = data.elevation
+            if (data.status == "ready" || data.status == "calculating" || data.status == "resetting") {
+                location.reload();
+            }
+            if (data.status == "running") {
+                document.getElementById("head").innerHTML = "Trial In Progress"
+                document.getElementById("pauseBtn").hidden = false
+                document.getElementById("resumeBtn").hidden = true
+                document.getElementById("progress").className = "progress-bar bg-success progress-bar-striped progress-bar-animated";
+            } else if (data.status == "paused") {
+                document.getElementById("head").innerHTML = "Trial Paused"
+                document.getElementById("pauseBtn").hidden = true
+                document.getElementById("resumeBtn").hidden = false
+                document.getElementById("progress").className = "progress-bar bg-secondary";
+            }
+          });
+    }
+
+    $( document ).ready(function() {
+        update()
+        $(function(){
+            setInterval(update, 5000);
+        });
+    });
+
+</script>
 </body>
 
 </html>

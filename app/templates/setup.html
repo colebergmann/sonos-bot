@@ -61,23 +61,36 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Latitude</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Latitude" id="lat">
+                    <input type="number" class="form-control" placeholder="Latitude" id="lat">
                   </div>
                   <!-- long box-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text">Longitude</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Longitude" id="lon">
+                    <input type="number" class="form-control" placeholder="Longitude" id="lon">
                   </div>
 
                   <!-- elevation box-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"">Elevation (m)</span>
+                      <span class="input-group-text">Elevation (m)</span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Elevation (meters)" id="elevation">
+                    <input type="number" class="form-control" placeholder="Elevation (meters)" id="elevation">
                   </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Speaker Color</span>
+                    </div>
+                    <select class="form-control">
+                        <option value="black">Black</option>
+                        <option value="white">White</option>
+                    </select>
+                  </div>
+
+
+
                 <button type="button" class="btn btn-primary btn-lg btn-block" onclick="beginTest()">Begin Test</button>
             </div>
         </div>

@@ -41,9 +41,23 @@ def home():
 def test():
     return robot.get_state()
 
+@app.route('/setstatus/<string:s>', methods=["POST"])
+def setState(s):
+    if s == "pause":
+        robot.pause()
+    elif s == "resume":
+        robot.resume()
+    elif s == "cancel":
+        robot.cancel()
+    else:
+        return {"error": "Unknown state"}
+    return {"status":"success"}
+
 
 @app.route('/setup/submit', methods=['POST'])
 def submit_params():
+    if robot.get_status() != "ready":
+        return {"error": "Robot is currently running a test. See the status <a href='/'>here</a>"}
     if request.json is None:
         return {"error": "Request is not in JSON format"}
     if request.json.get("lat") is None or request.json.get("lon") is None or request.json.get("elevation") is None \
