@@ -20,12 +20,12 @@ class Robot:
     total_seconds = 1
     timer = None
 
-    SECS_PER_CYCLE = 120    # time each cycle accounts for
-    CYCLE_PERIOD = 2        # time between cycles
+    SECS_PER_CYCLE = 1500    # time each cycle accounts for
+    CYCLE_PERIOD = 1        # time between cycles
 
     def __init__(self):
         print("DEBUG: [ROBOT] Object instantiated")
-        self.calculate(5, 5, 2000, '12/12/2009')
+        #self.calculate(5, 5, 2000, '12/12/2009')
 
     def calculate(self, lat, lon, elevation, date):
         self.status = "calculating"
@@ -63,6 +63,9 @@ class Robot:
     def run_timer(self):
         self.turntable.set_degrees(self.azimuth_arr[self.current_seconds])
         self.current_seconds += self.SECS_PER_CYCLE
+        if self.current_seconds > len(self.azimuth_arr):
+            self.timer.event.set()
+            self.status = "completed"
 
     # returns json format of Robot's current state
     def get_state(self):
@@ -93,7 +96,7 @@ class Robot:
     def resume(self):
         if self.status == "paused":
             self.status = "running"
-            timer = RobotTimer(self.CYCLE_PERIOD, self.run_timer)
+            self.timer = RobotTimer(self.CYCLE_PERIOD, self.run_timer)
 
 
     def seconds_to_string(self, secs):
@@ -116,6 +119,6 @@ class Robot:
 
     def getCompletionDate(self):
         if self.status == "running":
-            return (self.start_date + timedelta(seconds=self.total_seconds)).strftime("%-I:%M %p, %A %b %d")
+            return (datetime.now() + timedelta(seconds=self.total_seconds - self.current_seconds)).strftime("%-I:%M %p, %A %b %d")
         else:
             return "-"

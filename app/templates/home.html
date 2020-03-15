@@ -49,12 +49,12 @@
                 Estimated completion: <strong id="completion_date">-</strong><br>
                 <strong id="time_elapsed">1h 15m</strong> has elapsed, with <strong id="time_remaining">9h 48m</strong> remaining.<br>
             </p>
-            <div class="progress">
+            <div class="progress" style="height: 30px;">
                 <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" id="progress" style="width: 0%"></div>
             </div>
             <br>
             <p>Trial parameters: &emsp; (lat, lon)=(<strong id="lat"></strong>,<strong id="lon"></strong>) &emsp;  elevation=<strong id="elevation"></strong>m &emsp; date=<strong id="date_param"></strong>.</p>
-            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopModal">Cancel Test</button>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopModal" id="cancelButton">Cancel Test</button>
             <button type="button" class="btn btn-secondary" onclick="pause()" id="pauseBtn">Pause Trial</button>
             <button type="button" class="btn btn-success" onclick="resume()" id="resumeBtn" hidden>Resume Trial</button>
             <br><br>DEBUG: Turntable motor steps: <strong id="turntableSteps"></strong>
@@ -132,7 +132,6 @@
             document.getElementById("time_remaining").innerHTML = data.time_remaining
             document.getElementById("started_date").innerHTML = data.started_date
             document.getElementById("date_param").innerHTML = data.date_param
-            document.getElementById("progress").innerHTML = data.percentage_complete + "%";
             document.getElementById("progress").style = "width: " + data.percentage_complete + "%";
             document.getElementById("lat").innerHTML = data.lat
             document.getElementById("lon").innerHTML = data.lon
@@ -143,14 +142,22 @@
             }
             if (data.status == "running") {
                 document.getElementById("head").innerHTML = "Trial In Progress"
+                document.getElementById("progress").innerHTML = data.percentage_complete + "%";
                 document.getElementById("pauseBtn").hidden = false
                 document.getElementById("resumeBtn").hidden = true
-                document.getElementById("progress").className = "progress-bar bg-success progress-bar-striped progress-bar-animated";
+                document.getElementById("progress").className = "progress-bar bg-primary progress-bar-striped progress-bar-animated";
             } else if (data.status == "paused") {
                 document.getElementById("head").innerHTML = "Trial Paused"
                 document.getElementById("pauseBtn").hidden = true
                 document.getElementById("resumeBtn").hidden = false
                 document.getElementById("progress").className = "progress-bar bg-secondary";
+            } else if (data.status == "completed") {
+                document.getElementById("head").innerHTML = "Trial Completed"
+                document.getElementById("pauseBtn").hidden = true
+                document.getElementById("resumeBtn").hidden = true
+                document.getElementById("progress").className = "progress-bar bg-success";
+                document.getElementById("cancelButton").hidden = true;
+                document.getElementById("progress").innerHTML = "Complete";
             }
           });
     }
@@ -171,7 +178,7 @@
     $( document ).ready(function() {
         update()
         $(function(){
-            setInterval(update, 5000);
+            setInterval(update, 1000);
         });
 
         updateGraph()
