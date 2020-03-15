@@ -51,9 +51,19 @@ class Model:
         self.solar_df = self.solar_df.drop(self.solar_df[self.solar_df.index < left].index)
         self.solar_df = self.solar_df.drop(self.solar_df[self.solar_df.index > right].index)
         # trim sky df
-
         self.sky_df = self.sky_df.drop(self.sky_df[self.sky_df.index < left].index)
         self.sky_df = self.sky_df.drop(self.sky_df[self.sky_df.index > right].index)
+
+        # fix the bullshit
+        prev = self.solar_df.iloc[0]["azimuth"]
+        for t in self.solar_df.itertuples():
+            curr = t.apparent_elevation
+            if left == -1 and prev <= 0 and curr > 0:
+                left = t.Index
+            if left != -1 and right == -1 and prev >= 0 and curr < 0:
+                right = t.Index
+                break
+            prev = curr
 
 
     def show_plots(self):
@@ -79,4 +89,20 @@ class Model:
 
     # returns array of azimuth values at every second
     def get_azimuth_arr(self):
-        return self.solar_df[['azimuth']].to_numpy()
+        arr = self.solar_df[['azimuth']].to_numpy()
+
+        # invert for cases where graph jumps from 0 to 360
+        invert = False
+        for i in range(1, len(arr)):
+            delta = abs(arr[i] - arr[i-1])
+            # if the graph jumps, then correct the values
+            if delta > 300 and not invert:
+                invert = True
+            if invert:
+                arr[i] = arr[i] - 360
+
+        # normalize to start at zero
+        for i in range(1, len(arr)):
+            arr[i] = arr[i] - arr[0]
+        arr[0] = 0
+        return arr

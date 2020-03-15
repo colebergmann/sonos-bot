@@ -38,8 +38,12 @@ def home():
 
 
 @app.route('/state')
-def test():
+def state():
     return robot.get_state()
+
+@app.route('/graph')
+def getGraph():
+    return robot.get_graph()
 
 @app.route('/setstatus/<string:s>', methods=["POST"])
 def setState(s):

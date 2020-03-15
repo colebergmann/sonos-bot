@@ -43,16 +43,26 @@
     <main role="main" class="flex-shrink-0">
         <div class="container">
             <h1 class="mt-5" id="head">Trial In Progress</h1>
-            <p class="lead"><strong>1h 15m</strong> has elapsed, with <strong>9h 48m</strong> remaining.<br>Estimated completion: <strong id="completion">-</strong></p>
+
+            <p class="lead">
+                <br>Trial started: <strong id="started_date">-</strong><br>
+                Estimated completion: <strong id="completion_date">-</strong><br>
+                <strong id="time_elapsed">1h 15m</strong> has elapsed, with <strong id="time_remaining">9h 48m</strong> remaining.<br>
+            </p>
             <div class="progress">
-                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" id="progress" style="width: 75%"></div>
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" id="progress" style="width: 0%"></div>
             </div>
             <br>
-            <p>Parameters: (<strong id="lat"></strong>,<strong id="lon"></strong>) at <strong id="elevation"></strong>m on <strong id="date"></strong>.</p>
+            <p>Trial parameters: &emsp; (lat, lon)=(<strong id="lat"></strong>,<strong id="lon"></strong>) &emsp;  elevation=<strong id="elevation"></strong>m &emsp; date=<strong id="date_param"></strong>.</p>
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopModal">Cancel Test</button>
             <button type="button" class="btn btn-secondary" onclick="pause()" id="pauseBtn">Pause Trial</button>
             <button type="button" class="btn btn-success" onclick="resume()" id="resumeBtn" hidden>Resume Trial</button>
+            <br><br>DEBUG: Turntable motor steps: <strong id="turntableSteps"></strong>
             <hr>
+
+            <h1>Motor Path</h1>
+            <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+
         </div>
     </main>
 
@@ -93,6 +103,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 
 <script>
     function pause() {
@@ -116,11 +127,17 @@
 
     function update() {
         $.get("/state", function(data, status){
-            document.getElementById("completion").innerHTML = data.completion
-            document.getElementById("date").innerHTML = data.date
+            document.getElementById("completion_date").innerHTML = data.completion_date
+            document.getElementById("time_elapsed").innerHTML = data.time_elapsed
+            document.getElementById("time_remaining").innerHTML = data.time_remaining
+            document.getElementById("started_date").innerHTML = data.started_date
+            document.getElementById("date_param").innerHTML = data.date_param
+            document.getElementById("progress").innerHTML = data.percentage_complete + "%";
+            document.getElementById("progress").style = "width: " + data.percentage_complete + "%";
             document.getElementById("lat").innerHTML = data.lat
             document.getElementById("lon").innerHTML = data.lon
             document.getElementById("elevation").innerHTML = data.elevation
+            document.getElementById("turntableSteps").innerHTML = data.turntable.steps_taken;
             if (data.status == "ready" || data.status == "calculating" || data.status == "resetting") {
                 location.reload();
             }
@@ -138,11 +155,27 @@
           });
     }
 
+    function updateGraph() {
+        $.get("/graph", function(data, status){
+            var trace1 = {
+              y: data.y,
+              type: 'scatter'
+            };
+
+            var data = [trace1];
+
+            Plotly.newPlot('myDiv', data);
+          });
+    }
+
     $( document ).ready(function() {
         update()
         $(function(){
             setInterval(update, 5000);
         });
+
+        updateGraph()
+
     });
 
 </script>
