@@ -17,6 +17,7 @@ class TurntableMotor:
     # constructor
     def __init__(self):
         self.mutex = Lock()
+        GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.PUL_pin, GPIO.OUT)
         GPIO.setup(self.DIR_pin, GPIO.OUT)
         print("DEBUG: [Turntable] Constructed")
@@ -38,6 +39,7 @@ class TurntableMotor:
         self.mutex.acquire()
         print("DEBUG: [Turntable] Stepping", steps, "steps")
 
+        '''
         # account for pos or neg
         if steps > 0:
             GPIO.output(self.DIR_pin, GPIO.HIGH)
@@ -50,6 +52,7 @@ class TurntableMotor:
             time.sleep(0.001)
             GPIO.output(self.PUL_pin, GPIO.HIGH)
             time.sleep(0.001)
+        '''
 
         print("DEBUG: [Turntable] Done stepping", steps, "steps")
         self.mutex.release()
