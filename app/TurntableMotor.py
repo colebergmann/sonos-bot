@@ -1,6 +1,6 @@
 import time
 from threading import Thread, Lock
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 
 class TurntableMotor:
@@ -17,6 +17,8 @@ class TurntableMotor:
     # constructor
     def __init__(self):
         self.mutex = Lock()
+        GPIO.setup(self.PUL_pin, GPIO.OUT)
+        GPIO.setup(self.DIR_pin, GPIO.OUT)
         print("DEBUG: [Turntable] Constructed")
 
     # public facing set_steps method
@@ -31,8 +33,23 @@ class TurntableMotor:
     # private synchronous helper method that sets the steps to a desired quantity
     # hint: increment the motor (steps - steps_taken) times in a loop
     def __set_steps_sync(self, steps):
+        if steps == 0:
+            return
         self.mutex.acquire()
         print("DEBUG: [Turntable] Stepping", steps, "steps")
+
+        # account for pos or neg
+        if steps > 0:
+            GPIO.output(self.DIR_pin, GPIO.HIGH)
+        else:
+            GPIO.output(self.DIR_pin, GPIO.LOW)
+
+        # start stepping
+        for i in range(0, steps):
+            GPIO.output(self.PUL_pin, GPIO.LOW)
+            time.sleep(0.001)
+            GPIO.output(self.PUL_pin, GPIO.HIGH)
+            time.sleep(0.001)
 
         print("DEBUG: [Turntable] Done stepping", steps, "steps")
         self.mutex.release()

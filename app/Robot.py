@@ -20,8 +20,8 @@ class Robot:
     total_seconds = 1
     timer = None
 
-    SECS_PER_CYCLE = 1500    # time each cycle accounts for
-    CYCLE_PERIOD = 1        # time between cycles
+    SECS_PER_CYCLE = 300    # time each cycle accounts for
+    CYCLE_PERIOD = 2        # time between cycles
 
     def __init__(self):
         print("DEBUG: [ROBOT] Object instantiated")
