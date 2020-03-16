@@ -5,8 +5,8 @@ import RPi.GPIO as GPIO
 
 class TurntableMotor:
 
-    PUL_pin = 12
-    DIR_pin = 16
+    PUL_pin = 16
+    DIR_pin = 18
     azimuth_arr = None
     factor = 360/51/200
 
