@@ -1,6 +1,16 @@
 import time
 from threading import Thread, Lock
-import RPi.GPIO as GPIO
+
+
+# conditionally import GPIO
+has_gpio = False
+try:
+    import RPi.GPIO as GPIO
+    print("[DEBUG] Running on Raspberry Pi Hardware")
+    has_gpio = True
+except ImportError:
+    print("[DEBUG] Running on non-pi hardware, simulating GPIO")
+    has_gpio = False
 
 
 class TurntableMotor:
@@ -17,15 +27,16 @@ class TurntableMotor:
     # constructor
     def __init__(self):
         self.mutex = Lock()
-        GPIO.setmode(GPIO.BOARD)
+        if has_gpio:
+            GPIO.setmode(GPIO.BOARD)
 
-        # setup pins for output
-        GPIO.setup(self.PUL_pin, GPIO.OUT)
-        GPIO.setup(self.DIR_pin, GPIO.OUT)
+            # setup pins for output
+            GPIO.setup(self.PUL_pin, GPIO.OUT)
+            GPIO.setup(self.DIR_pin, GPIO.OUT)
 
-        # set both pins to high
-        GPIO.output(self.PUL_pin, GPIO.HIGH)
-        GPIO.output(self.DIR_pin, GPIO.HIGH)
+            # set both pins to high
+            GPIO.output(self.PUL_pin, GPIO.HIGH)
+            GPIO.output(self.DIR_pin, GPIO.HIGH)
         print("DEBUG: [Turntable] Constructed")
 
     # public facing set_steps method
@@ -45,18 +56,19 @@ class TurntableMotor:
         self.mutex.acquire()
         print("DEBUG: [Turntable] Stepping", steps, "steps")
 
-        # account for pos or neg
-        if steps > 0:
-            GPIO.output(self.DIR_pin, GPIO.HIGH)
-        else:
-            GPIO.output(self.DIR_pin, GPIO.LOW)
+        if has_gpio:
+            # account for pos or neg
+            if steps > 0:
+                GPIO.output(self.DIR_pin, GPIO.HIGH)
+            else:
+                GPIO.output(self.DIR_pin, GPIO.LOW)
 
-        # start stepping
-        for i in range(0, steps):
-            GPIO.output(self.PUL_pin, GPIO.LOW)
-            time.sleep(0.001)
-            GPIO.output(self.PUL_pin, GPIO.HIGH)
-            time.sleep(0.001)
+            # start stepping
+            for i in range(0, steps):
+                GPIO.output(self.PUL_pin, GPIO.LOW)
+                time.sleep(0.001)
+                GPIO.output(self.PUL_pin, GPIO.HIGH)
+                time.sleep(0.001)
 
         print("DEBUG: [Turntable] Done stepping", steps, "steps")
         self.mutex.release()
