@@ -1,4 +1,4 @@
-from flask import render_template, Flask, request, redirect
+from flask import render_template, Flask, request, redirect, session
 from Robot import Robot
 import pandas as pd
 from threading import Thread
@@ -15,13 +15,30 @@ def index_sample():
 
 @app.route('/setup')
 def setup():
+    if not session.get('logged_in'):
+        return render_template('login.html')
     if robot.get_status() != 'ready':
         return redirect("/", code=303)
     return render_template('setup.html', title='Setup')
 
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+    if request.form['password'] == 'password':
+        session['logged_in'] = True
+    else:
+        pass
+    return redirect("/", code=303)
+
+@app.route("/logout")
+def logout():
+    session['logged_in'] = False
+    return home()
+
 
 @app.route('/preparing')
 def preparing():
+    if not session.get('logged_in'):
+        return render_template('login.html')
     if robot.get_status() != 'resetting' and robot.get_status() != 'calculating':
         return redirect("/", code=303)
     return render_template('preparing.html', title='Preparing')
@@ -30,6 +47,8 @@ def preparing():
 @app.route('/')
 @app.route('/index')
 def home():
+    if not session.get('logged_in'):
+        return render_template('login.html')
     if robot.get_status() == 'ready':
         return redirect("setup", code=303)
     if robot.get_status() == 'resetting' or robot.get_status() == 'calculating':
@@ -94,4 +113,6 @@ def is_number(s):
 if __name__ == "__main__":
     robot = Robot()
     app.debug = True
+    app.secret_key = 'KMergmkerg8ergmklzmagnja8rg8rgnamgr'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.run(use_reloader=False, host='0.0.0.0')

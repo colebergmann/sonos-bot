@@ -1,20 +1,4 @@
-<!doctype html>
-<html lang="en" class="h-100">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">f
-    <title>sonos-bot - Setup</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sticky-footer-navbar/">
-
-    <link rel="stylesheet" href="static/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <meta name="theme-color" content="#563d7c">
-
-</head>
+{% include "headers.html" %}
 
 <body class="d-flex flex-column h-100">
     <header>
@@ -32,6 +16,9 @@
                         <a class="nav-link" href="">Setup <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
+                <form class="form-inline mt-2 mt-md-0" action="/logout" method="GET">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Logout</button>
+                </form>
             </div>
         </nav>
     </header>
@@ -40,7 +27,7 @@
     <main role="main" class="flex-shrink-0">
         <div class="container">
             <h1 class="mt-5">Trial Setup</h1>
-            <p class="lead">Configure the parameters to begin a trial. You might have some additional information here. This looks better if there are at least two lines of text.</p>
+            <p class="lead">Welcome to sonos-bot! Get started by entering your trial parameters below, then hit the "Begin Test" button to begin the trial.</p>
 
             <div class="setup-params">
 
@@ -96,19 +83,7 @@
         </div>
     </main>
 
-    <footer class="footer mt-auto py-3">
-        <div class="container">
-            <span class="text-muted">acknowledgements?? - 2020</span>
-        </div>
-    </footer>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+{% include "footer.html" %}
 </body>
 
 <script>

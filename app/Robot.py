@@ -109,6 +109,8 @@ class Robot:
         return result
 
     def cancel(self):
+        self.timer.stop()
+        self.timer = None
         self.status = "ready"
 
     def get_graph(self):
