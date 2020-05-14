@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>sonos-bot - Overview</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sticky-footer-navbar/">
+
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="theme-color" content="#563d7c">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js" rel="stylesheet">
+
+</head>
+
+<body class="d-flex flex-column h-100">
+    <header>
+
+        <!-- navbar -->
+        <nav class="navbar navbar-expand-sm navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="./">sonos-bot</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Overview <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Report</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <h1 class="mt-5" id="head">Trial In Progress</h1>
+
+            <p class="lead">
+                <br>Trial started: <strong id="started_date">-</strong><br>
+                Estimated completion: <strong id="completion_date">-</strong><br>
+                <strong id="time_elapsed">1h 15m</strong> has elapsed, with <strong id="time_remaining">9h 48m</strong> remaining.<br>
+            </p>
+            <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" id="progress" style="width: 0%"></div>
+            </div>
+            <br>
+            <p>Trial parameters: &emsp; (lat, lon)=(<strong id="lat"></strong>,<strong id="lon"></strong>) &emsp;  elevation=<strong id="elevation"></strong>m &emsp; date=<strong id="date_param"></strong>.</p>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopModal" id="cancelButton">Cancel Test</button>
+            <button type="button" class="btn btn-secondary" onclick="pause()" id="pauseBtn">Pause Trial</button>
+            <button type="button" class="btn btn-success" onclick="resume()" id="resumeBtn" hidden>Resume Trial</button>
+            <br><br>DEBUG: Turntable motor steps: <strong id="turntableSteps"></strong>
+            <hr>
+
+            <h1>Motor Path</h1>
+            <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+
+        </div>
+    </main>
+
+
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <span class="text-muted">acknowledgements?? - 2020</span>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+<div class="modal fade" id="stopModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cancel Test</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          Are you sure you want to cancel the current test? All motors will stop and the recorded data will be discarded.
+          <br><strong>This action can not be reversed.</strong>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="cancel()">Confirm Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+
+<script>
+    function pause() {
+        $.post("/setstatus/pause", function(data, status){
+            update();
+              //alert("Done")
+          });
+    }
+    function resume() {
+        $.post("/setstatus/resume", function(data, status){
+              //alert("Done")
+            update();
+          });
+    }
+    function cancel() {
+        $.post("/setstatus/cancel", function(data, status){
+              //alert("Done")
+            update();
+          });
+    }
+
+    function update() {
+        $.get("/state", function(data, status){
+            document.getElementById("completion_date").innerHTML = data.completion_date
+            document.getElementById("time_elapsed").innerHTML = data.time_elapsed
+            document.getElementById("time_remaining").innerHTML = data.time_remaining
+            document.getElementById("started_date").innerHTML = data.started_date
+            document.getElementById("date_param").innerHTML = data.date_param
+            document.getElementById("progress").style = "width: " + data.percentage_complete + "%";
+            document.getElementById("lat").innerHTML = data.lat
+            document.getElementById("lon").innerHTML = data.lon
+            document.getElementById("elevation").innerHTML = data.elevation
+            document.getElementById("turntableSteps").innerHTML = data.turntable.steps_taken;
+            if (data.status == "ready" || data.status == "calculating" || data.status == "resetting") {
+                location.reload();
+            }
+            if (data.status == "running") {
+                document.getElementById("head").innerHTML = "Trial In Progress"
+                document.getElementById("progress").innerHTML = data.percentage_complete + "%";
+                document.getElementById("pauseBtn").hidden = false
+                document.getElementById("resumeBtn").hidden = true
+                document.getElementById("progress").className = "progress-bar bg-primary progress-bar-striped progress-bar-animated";
+            } else if (data.status == "paused") {
+                document.getElementById("head").innerHTML = "Trial Paused"
+                document.getElementById("pauseBtn").hidden = true
+                document.getElementById("resumeBtn").hidden = false
+                document.getElementById("progress").className = "progress-bar bg-secondary";
+            } else if (data.status == "completed") {
+                document.getElementById("head").innerHTML = "Trial Completed"
+                document.getElementById("pauseBtn").hidden = true
+                document.getElementById("resumeBtn").hidden = true
+                document.getElementById("progress").className = "progress-bar bg-success";
+                document.getElementById("cancelButton").hidden = true;
+                document.getElementById("progress").innerHTML = "Complete";
+            }
+          });
+    }
+
+    function updateGraph() {
+        $.get("/graph", function(data, status){
+            var trace1 = {
+              y: data.y,
+              type: 'scatter'
+            };
+
+            var data = [trace1];
+
+            Plotly.newPlot('myDiv', data);
+          });
+    }
+
+    $( document ).ready(function() {
+        update()
+        $(function(){
+            setInterval(update, 1000);
+        });
+
+        updateGraph()
+
+    });
+
+</script>
+</body>
+
+</html>

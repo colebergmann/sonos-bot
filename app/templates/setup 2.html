@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">f
+    <title>sonos-bot - Setup</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sticky-footer-navbar/">
+
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="theme-color" content="#563d7c">
+
+</head>
+
+<body class="d-flex flex-column h-100">
+    <header>
+
+        <!-- navbar -->
+        <nav class="navbar navbar-expand-sm navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="">sonos-bot</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="">Setup <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <h1 class="mt-5">Trial Setup</h1>
+            <p class="lead">Configure the parameters to begin a trial. You might have some additional information here. This looks better if there are at least two lines of text.</p>
+
+            <div class="setup-params">
+
+                <div class="alert alert-danger" role="alert" id="err" hidden>
+                    <strong>Error: </strong><span id="err-msg">message</span>
+                </div>
+
+                <!-- date picker -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend date">
+                      <span class="input-group-text">Date</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="MM/DD/YYYY" data-provide="datepicker" id="date">
+                  </div>
+
+                <!-- lat box-->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Latitude</span>
+                    </div>
+                    <input type="number" class="form-control" placeholder="Latitude" id="lat">
+                  </div>
+                  <!-- long box-->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Longitude</span>
+                    </div>
+                    <input type="number" class="form-control" placeholder="Longitude" id="lon">
+                  </div>
+
+                  <!-- elevation box-->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Elevation (m)</span>
+                    </div>
+                    <input type="number" class="form-control" placeholder="Elevation (meters)" id="elevation">
+                  </div>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Speaker Color</span>
+                    </div>
+                    <select class="form-control">
+                        <option value="black">Black</option>
+                        <option value="white">White</option>
+                    </select>
+                  </div>
+
+
+
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="beginTest()">Begin Test</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <span class="text-muted">acknowledgements?? - 2020</span>
+        </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+</body>
+
+<script>
+    function beginTest() {
+        $.ajax ({
+            type: "POST",
+            url: '/setup/submit',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                "lat":document.getElementById("lat").value,
+                "lon":document.getElementById("lon").value,
+                "elevation":document.getElementById("elevation").value,
+                "date":document.getElementById("date").value,
+            }),
+            success: function (data) {
+                if (data["error"] != null) {
+                    // we have an error
+                    document.getElementById("err-msg").innerHTML = data["error"]
+                    document.getElementById("err").hidden = false
+                } else {
+                    window.location.href = "../";
+                }
+            }
+        })
+    }
+</script>
+
+</html>
