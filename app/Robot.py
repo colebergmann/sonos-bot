@@ -4,6 +4,7 @@ from Model import Model
 from datetime import datetime
 from datetime import timedelta
 from RobotTimer import RobotTimer
+from flask import jsonify
 
 
 class Robot:
