@@ -60,9 +60,13 @@ def home():
 def state():
     return robot.get_state()
 
-@app.route('/graph')
-def getGraph():
-    return robot.get_graph()
+@app.route('/graph/azimuth')
+def getAzimuthGraph():
+    return robot.get_azimuth_graph()
+
+@app.route('/graph/elevation')
+def getElevationGraph():
+    return robot.get_elevation_graph()
 
 @app.route('/setstatus/<string:s>', methods=["POST"])
 def setState(s):

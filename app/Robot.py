@@ -1,4 +1,5 @@
 from TurntableMotor import TurntableMotor
+from ArmMotor import ArmMotor
 from threading import Event, Thread
 from Model import Model
 from datetime import datetime
@@ -8,19 +9,22 @@ from flask import jsonify
 
 
 class Robot:
-    turntable = TurntableMotor()
+    turntable_motor = TurntableMotor()
+    arm_motor = ArmMotor()
     status = "ready"  # status = ready/calculating/resetting/running/done
     model = None
     lat = 0
     lon = 0
     elevation = 0
     date_param = 0
-    azimuth_arr = None
     start_date = datetime.now()
     current_seconds = 0
     total_seconds = 1
     timer = None
     speaker_color = "black"     # or "white"
+
+    azimuth_arr = None
+    elevation_arr = None
 
     SECS_PER_CYCLE = 300    # time each cycle accounts for
     CYCLE_PERIOD = 2        # time between cycles
@@ -41,10 +45,12 @@ class Robot:
             self.elevation = elevation
             self.date_param = date
             self.azimuth_arr = model.get_azimuth_arr()
+            self.elevation_arr = model.get_apparent_elevation_arr()
             self.total_seconds = len(self.azimuth_arr)
-            print(len(self.azimuth_arr))
             self.start_date = datetime.now()
             self.speaker_color = speaker_color
+
+            assert(len(self.azimuth_arr) == len(self.elevation_arr))
 
             #commence the timer!
             self.run_timer()
@@ -62,10 +68,12 @@ class Robot:
         #t1 = Thread(target=self.rotational_motor.reset)
         #t1.start()
         #t1.join()
+        self.arm_motor.reset_motor()
         self.status = "running"
 
     def run_timer(self):
-        self.turntable.set_degrees(self.azimuth_arr[self.current_seconds])
+        self.turntable_motor.set_degrees(self.azimuth_arr[self.current_seconds])
+        self.arm_motor.set_degrees(self.elevation_arr[self.current_seconds])
         self.current_seconds += self.SECS_PER_CYCLE
         if self.current_seconds > len(self.azimuth_arr):
             self.timer.event.set()
@@ -85,7 +93,8 @@ class Robot:
             "time_elapsed": self.seconds_to_string(self.current_seconds),
             "time_remaining": self.seconds_to_string(self.total_seconds - self.current_seconds),
             "percentage_complete": int((self.current_seconds / self.total_seconds)*100),
-            "turntable": self.turntable.get_state(),
+            "turntable": self.turntable_motor.get_state(),
+            "arm_motor": self.arm_motor.get_state(),
             "speaker_color" : self.speaker_color,
         }
 
@@ -114,13 +123,19 @@ class Robot:
 
     def cancel(self):
         self.timer.stop()
-        self.timer = None
+        if self.timer is not None:
+            self.timer = None
         self.status = "ready"
 
-    def get_graph(self):
-
+    def get_azimuth_graph(self):
         return {
             "y": self.azimuth_arr[::60].flatten('F').tolist(),
+            "type": "scatter"
+        }
+
+    def get_elevation_graph(self):
+        return {
+            "y": self.elevation_arr[::60].flatten('F').tolist(),
             "type": "scatter"
         }
 

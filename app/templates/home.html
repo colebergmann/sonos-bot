@@ -43,11 +43,13 @@
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopModal" id="cancelButton">Cancel Test</button>
             <button type="button" class="btn btn-secondary" onclick="pause()" id="pauseBtn">Pause Trial</button>
             <button type="button" class="btn btn-success" onclick="resume()" id="resumeBtn" hidden>Resume Trial</button>
-            <br><br>Turntable motor steps: <strong id="turntableSteps"></strong>
+            <br><br>Turntable motor: &emsp;  steps=<strong id="turntableSteps"></strong> &emsp;  PUL_pin=<strong id="turntablePUL"></strong> &emsp;  DIR_pin=<strong id="turntableDIR"></strong>
+            <br><br>Arm Motor:       &emsp;  steps=<strong id="armSteps"></strong> &emsp;  PUL_pin=<strong id="armPUL"></strong> &emsp;  DIR_pin=<strong id="armDIR"></strong>
             <hr>
 
-            <h1>Motor Path</h1>
-            <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+            <h1>Motor Paths</h1>
+            <div id='azimuthDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+            <div id='elevationDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
 
         </div>
     </main>
@@ -110,6 +112,11 @@
             document.getElementById("speaker-color").innerHTML = data.speaker_color
             document.getElementById("elevation").innerHTML = data.elevation
             document.getElementById("turntableSteps").innerHTML = data.turntable.steps_taken;
+            document.getElementById("turntablePUL").innerHTML = data.turntable.PUL_pin;
+            document.getElementById("turntableDIR").innerHTML = data.turntable.DIR_pin;
+            document.getElementById("armSteps").innerHTML = data.arm_motor.steps_taken;
+            document.getElementById("armPUL").innerHTML = data.arm_motor.PUL_pin;
+            document.getElementById("armDIR").innerHTML = data.arm_motor.DIR_pin;
             if (data.status == "ready" || data.status == "calculating" || data.status == "resetting") {
                 location.reload();
             }
@@ -135,8 +142,8 @@
           });
     }
 
-    function updateGraph() {
-        $.get("/graph", function(data, status){
+    function updateGraph(endpoint, div, title) {
+        $.get(endpoint, function(data, status){
             var trace1 = {
               y: data.y,
               type: 'scatter'
@@ -144,7 +151,23 @@
 
             var data = [trace1];
 
-            Plotly.newPlot('myDiv', data);
+            var layout = {
+                title: {
+                    text: title,
+                },
+                xaxis: {
+                    title: {
+                        text: 'minutes'
+                    },
+                },
+                yaxis: {
+                    title: {
+                        text: 'degrees',
+                    }
+                }
+            };
+
+            Plotly.newPlot(div, data, layout);
           });
     }
 
@@ -153,8 +176,8 @@
         $(function(){
             setInterval(update, 1000);
         });
-
-        updateGraph()
+        updateGraph("/graph/azimuth", 'azimuthDiv', "Turntable Motor");
+        updateGraph("/graph/elevation", 'elevationDiv', "Arm Motor");
 
     });
 

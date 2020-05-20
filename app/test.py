@@ -9,5 +9,6 @@ mdl.trim() # trim the plots to one full cycle of apparent_elevation
 
 mdl.show_plots()
 
-arr = mdl.get_azimuth_arr()
+arr = mdl.get_apparent_elevation_arr()
+print(arr)
 
