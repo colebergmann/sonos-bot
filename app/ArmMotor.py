@@ -26,7 +26,7 @@ class ArmMotor:
     PUL_pin = 0
     DIR_pin = 0
     azimuth_arr = None
-    factor = 360/50/1000        # The number of degrees a pulse moves the motor
+    factor = 360/50/200        # The number of degrees a pulse moves the motor
 
 
     # track current number of steps we have taken since zero

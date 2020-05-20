@@ -18,7 +18,7 @@ class TurntableMotor:
     PUL_pin = 16
     DIR_pin = 18
     azimuth_arr = None
-    factor = 360/50.9/1000      # COME BACK TO THIS
+    factor = 360/50.9/1000
 
 
     # track current number of steps we have taken since zero
