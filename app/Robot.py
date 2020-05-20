@@ -5,6 +5,7 @@ from Model import Model
 from datetime import datetime
 from datetime import timedelta
 from RobotTimer import RobotTimer
+import numpy as np
 from flask import jsonify
 
 
@@ -25,6 +26,7 @@ class Robot:
 
     azimuth_arr = None
     elevation_arr = None
+    dni_arr = None
 
     SECS_PER_CYCLE = 300    # time each cycle accounts for
     CYCLE_PERIOD = 2        # time between cycles
@@ -46,11 +48,18 @@ class Robot:
             self.date_param = date
             self.azimuth_arr = model.get_azimuth_arr()
             self.elevation_arr = model.get_apparent_elevation_arr()
+            self.dni_arr =model.get_dni_arr()
             self.total_seconds = len(self.azimuth_arr)
             self.start_date = datetime.now()
             self.speaker_color = speaker_color
 
+            # multiply dni by *.38 if its white
+            if self.speaker_color == "white":
+                self.dni_arr = np.multiply(self.dni_arr, 0.38)
+
+            # make sure all 3 data arrays are equal length
             assert(len(self.azimuth_arr) == len(self.elevation_arr))
+            assert (len(self.azimuth_arr) == len(self.dni_arr))
 
             #commence the timer!
             self.run_timer()
@@ -136,6 +145,12 @@ class Robot:
     def get_elevation_graph(self):
         return {
             "y": self.elevation_arr[::60].flatten('F').tolist(),
+            "type": "scatter"
+        }
+
+    def get_dni_graph(self):
+        return {
+            "y": self.dni_arr[::60].flatten('F').tolist(),
             "type": "scatter"
         }
 

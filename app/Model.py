@@ -111,3 +111,7 @@ class Model:
     def get_apparent_elevation_arr(self):
         arr = self.solar_df[['apparent_elevation']].to_numpy()
         return arr
+
+    def get_dni_arr(self):
+        arr = self.sky_df[['dni']].to_numpy()
+        return arr

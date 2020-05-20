@@ -68,6 +68,10 @@ def getAzimuthGraph():
 def getElevationGraph():
     return robot.get_elevation_graph()
 
+@app.route('/graph/dni')
+def getDniGraph():
+    return robot.get_dni_graph()
+
 @app.route('/setstatus/<string:s>', methods=["POST"])
 def setState(s):
     if s == "pause":
