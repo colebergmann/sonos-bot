@@ -41,6 +41,7 @@ class Robot:
             self.date_param = date
             self.azimuth_arr = model.get_azimuth_arr()
             self.total_seconds = len(self.azimuth_arr)
+            print(len(self.azimuth_arr))
             self.start_date = datetime.now()
 
             #commence the timer!
@@ -116,7 +117,7 @@ class Robot:
     def get_graph(self):
 
         return {
-            "y": self.azimuth_arr[::20].flatten('F').tolist(),
+            "y": self.azimuth_arr[::60].flatten('F').tolist(),
             "type": "scatter"
         }
 
