@@ -106,3 +106,8 @@ class Model:
             arr[i] = arr[i] - arr[0]
         arr[0] = 0
         return arr
+
+    # Returns array of apparent_elevation values at every second
+    def get_apparent_elevation_arr(self):
+        arr = self.solar_df[['apparent_elevation']].to_numpy()
+        return arr
