@@ -39,7 +39,7 @@
                 <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" id="progress" style="width: 0%"></div>
             </div>
             <br>
-            <p>Trial parameters: &emsp; (lat, lon)=(<strong id="lat"></strong>,<strong id="lon"></strong>) &emsp;  elevation=<strong id="elevation"></strong>m &emsp; date=<strong id="date_param"></strong>.</p>
+            <p>Trial parameters: &emsp; (lat, lon)=(<strong id="lat"></strong>,<strong id="lon"></strong>) &emsp;  elevation=<strong id="elevation"></strong>m &emsp; date=<strong id="date_param"></strong>    speaker_color=<strong id="speaker-color"></strong></p>
             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopModal" id="cancelButton">Cancel Test</button>
             <button type="button" class="btn btn-secondary" onclick="pause()" id="pauseBtn">Pause Trial</button>
             <button type="button" class="btn btn-success" onclick="resume()" id="resumeBtn" hidden>Resume Trial</button>
@@ -107,6 +107,7 @@
             document.getElementById("progress").style = "width: " + data.percentage_complete + "%";
             document.getElementById("lat").innerHTML = data.lat
             document.getElementById("lon").innerHTML = data.lon
+            document.getElementById("speaker-color").innerHTML = data.speaker_color
             document.getElementById("elevation").innerHTML = data.elevation
             document.getElementById("turntableSteps").innerHTML = data.turntable.steps_taken;
             if (data.status == "ready" || data.status == "calculating" || data.status == "resetting") {

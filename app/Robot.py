@@ -20,6 +20,7 @@ class Robot:
     current_seconds = 0
     total_seconds = 1
     timer = None
+    speaker_color = "black"     # or "white"
 
     SECS_PER_CYCLE = 300    # time each cycle accounts for
     CYCLE_PERIOD = 2        # time between cycles
@@ -28,7 +29,7 @@ class Robot:
         print("DEBUG: [ROBOT] Object instantiated")
         #self.calculate(5, 5, 2000, '12/12/2009')
 
-    def calculate(self, lat, lon, elevation, date):
+    def calculate(self, lat, lon, elevation, date, speaker_color):
         self.status = "calculating"
 
         # make sure the calculations are successful. if not, kick user back to params page
@@ -43,6 +44,7 @@ class Robot:
             self.total_seconds = len(self.azimuth_arr)
             print(len(self.azimuth_arr))
             self.start_date = datetime.now()
+            self.speaker_color = speaker_color
 
             #commence the timer!
             self.run_timer()
@@ -83,7 +85,8 @@ class Robot:
             "time_elapsed": self.seconds_to_string(self.current_seconds),
             "time_remaining": self.seconds_to_string(self.total_seconds - self.current_seconds),
             "percentage_complete": int((self.current_seconds / self.total_seconds)*100),
-            "turntable": self.turntable.get_state()
+            "turntable": self.turntable.get_state(),
+            "speaker_color" : self.speaker_color,
         }
 
     def get_status(self):

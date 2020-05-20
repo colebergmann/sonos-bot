@@ -70,7 +70,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text">Speaker Color</span>
                     </div>
-                    <select class="form-control">
+                    <select class="form-control" id="speaker-color">
                         <option value="black">Black</option>
                         <option value="white">White</option>
                     </select>
@@ -110,6 +110,7 @@
                 "lon":document.getElementById("lon").value,
                 "elevation":document.getElementById("elevation").value,
                 "date":document.getElementById("date").value,
+                "speaker_color":document.getElementById("speaker-color").value,
             }),
             success: function (data) {
                 if (data["error"] != null) {

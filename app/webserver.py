@@ -97,7 +97,8 @@ def submit_params():
 
     # start the calculations in a separate thread so we aren't clogging up the main thread
     Thread(target=robot.calculate, args=[float(request.json.get("lat")), float(request.json.get("lon")),
-                                         float(request.json.get("elevation")), request.json.get("date")]).start()
+                                         float(request.json.get("elevation")), request.json.get("date"),
+                                         request.json.get("speaker_color")]).start()
     return {"status": "success"}
 
 
