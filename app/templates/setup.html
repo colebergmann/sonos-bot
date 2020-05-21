@@ -27,7 +27,7 @@
     <main role="main" class="flex-shrink-0">
         <div class="container">
             <h1 class="mt-5">Trial Setup</h1>
-            <p class="lead">Welcome to sonos-bot! Get started by entering your trial parameters below, then hit the "Begin Test" button to begin the trial.</p>
+            <p class="lead">Welcome to sonos-bot! Get started by entering your trial parameters below, then hit the "Begin Trial" button to begin the trial.</p>
 
             <div class="setup-params">
 
@@ -43,6 +43,16 @@
                     <input type="text" class="form-control" placeholder="MM/DD/YYYY" data-provide="datepicker" id="date">
                   </div>
 
+                <!-- preset selector -->
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Preset</span>
+                    </div>
+                    <select class="form-control" id="preset">
+                        <option value="none" id="-1">None</option>
+                    </select>
+                  </div>
+
                 <!-- lat box-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -50,6 +60,7 @@
                     </div>
                     <input type="number" class="form-control" placeholder="Latitude" id="lat">
                   </div>
+
                   <!-- long box-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -66,6 +77,7 @@
                     <input type="number" class="form-control" placeholder="Elevation (meters)" id="elevation">
                   </div>
 
+                <!-- speaker color-->
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text">Speaker Color</span>
@@ -78,7 +90,7 @@
 
 
 
-                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="beginTest()">Begin Test</button>
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="beginTest()">Begin Trial</button>
 
                 <!-- storage options-->
                 <div class="dropdown" style="padding-top: 10px;">
@@ -99,6 +111,9 @@
 </body>
 
 <script>
+
+    var presets = []
+
     function beginTest() {
         $.ajax ({
             type: "POST",
@@ -123,6 +138,33 @@
             }
         })
     }
+
+    $( document ).ready(function() {
+        $.get("/static/presets.json", function(data, status){
+            presets = data
+            // Populate dropdown:
+            for (element in data) {
+                var option = document.createElement("option");
+                option.text = presets[element]["name"];
+                option.id = element
+                document.getElementById("preset").add(option);
+                console.log("Added")
+            }
+        });
+    });
+
+    // handle dropdown change
+    $("#preset").change(function () {
+        var optionID = $('option:selected').attr('id');
+        console.log("End: " + optionID)
+        if (optionID >= 0) {
+            document.getElementById("lat").value = presets[optionID]["latitude"]
+            document.getElementById("lon").value = presets[optionID]["longitude"]
+            document.getElementById("elevation").value = presets[optionID]["elevation"]
+            console.log("Preset changed to " + this.value + "(id=" + optionID + ")")
+        }
+    });
+
 </script>
 
 </html>

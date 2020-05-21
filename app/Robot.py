@@ -10,30 +10,29 @@ from flask import jsonify
 
 
 class Robot:
-    turntable_motor = TurntableMotor()
-    arm_motor = ArmMotor()
-    status = "ready"  # status = ready/calculating/resetting/running/done
-    model = None
-    lat = 0
-    lon = 0
-    elevation = 0
-    date_param = 0
-    start_date = datetime.now()
-    current_seconds = 0
-    total_seconds = 1
-    timer = None
-    speaker_color = "black"     # or "white"
-
-    azimuth_arr = None
-    elevation_arr = None
-    dni_arr = None
-
-    SECS_PER_CYCLE = 300    # time each cycle accounts for
-    CYCLE_PERIOD = 2        # time between cycles
-
     def __init__(self):
         print("DEBUG: [ROBOT] Object instantiated")
         #self.calculate(5, 5, 2000, '12/12/2009')
+        self.turntable_motor = TurntableMotor()
+        self.arm_motor = ArmMotor()
+        self.status = "ready"  # status = ready/calculating/resetting/running/done
+        self.model = None
+        self.lat = 0
+        self.lon = 0
+        self.elevation = 0
+        self.date_param = 0
+        self.start_date = datetime.now()
+        self.current_seconds = 0
+        self.total_seconds = 1
+        self.timer = None
+        self.speaker_color = "black"  # or "white"
+
+        self.azimuth_arr = None
+        self.elevation_arr = None
+        self.dni_arr = None
+
+        self.SECS_PER_CYCLE = 300  # time each cycle accounts for
+        self.CYCLE_PERIOD = 2  # time between cycles
 
     def calculate(self, lat, lon, elevation, date, speaker_color):
         self.status = "calculating"

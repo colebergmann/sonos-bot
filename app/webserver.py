@@ -80,6 +80,7 @@ def setState(s):
         robot.resume()
     elif s == "cancel":
         robot.cancel()
+        robot.__init__()
     else:
         return {"error": "Unknown state"}
     return {"status":"success"}
