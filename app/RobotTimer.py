@@ -26,9 +26,3 @@ class RobotTimer:
     def stop(self):
         self.event.set()
         self.thread.join()
-
-# start timer
-#timer = RepeatedTimer(10, print, 'Hello world')
-
-# stop timer
-#timer.stop()

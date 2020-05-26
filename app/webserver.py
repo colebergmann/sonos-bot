@@ -70,7 +70,13 @@ def getElevationGraph():
 
 @app.route('/graph/dni')
 def getDniGraph():
-    return robot.get_dni_graph()
+    arr  = robot.get_dni_graph()
+    print(arr)
+    return arr
+
+@app.route('/graph/temperature')
+def getTemperatureGraph():
+    return robot.get_temperature_graph()
 
 @app.route('/setstatus/<string:s>', methods=["POST"])
 def setState(s):

@@ -45,12 +45,14 @@
             <button type="button" class="btn btn-success" onclick="resume()" id="resumeBtn" hidden>Resume Trial</button>
             <br><br>Turntable motor: &emsp;  steps=<strong id="turntableSteps"></strong> &emsp;  PUL_pin=<strong id="turntablePUL"></strong> &emsp;  DIR_pin=<strong id="turntableDIR"></strong>
             <br><br>Arm Motor:       &emsp;  steps=<strong id="armSteps"></strong> &emsp;  PUL_pin=<strong id="armPUL"></strong> &emsp;  DIR_pin=<strong id="armDIR"></strong>
+            <br><br>Heater:             current_temperature=<strong id="currentTemp"></strong> &emsp;  reference_temperature=<strong id="referenceTemp"></strong>
             <hr>
 
             <h1>Motor Paths</h1>
             <div id='azimuthDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
             <div id='elevationDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
             <div id='dniDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+            <div id='temperatureDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
 
         </div>
     </main>
@@ -118,6 +120,8 @@
             document.getElementById("armSteps").innerHTML = data.arm_motor.steps_taken;
             document.getElementById("armPUL").innerHTML = data.arm_motor.PUL_pin;
             document.getElementById("armDIR").innerHTML = data.arm_motor.DIR_pin;
+            document.getElementById("currentTemp").innerHTML = data.heater.current_temperature;
+            document.getElementById("referenceTemp").innerHTML = data.heater.reference_temperature;
             if (data.status == "ready" || data.status == "calculating" || data.status == "resetting") {
                 location.reload();
             }
@@ -143,7 +147,7 @@
           });
     }
 
-    function updateGraph(endpoint, div, title) {
+    function updateGraph(endpoint, div, title, xaxis, yaxis) {
         $.get(endpoint, function(data, status){
             var trace1 = {
               y: data.y,
@@ -158,12 +162,12 @@
                 },
                 xaxis: {
                     title: {
-                        text: 'minutes'
+                        text: xaxis
                     },
                 },
                 yaxis: {
                     title: {
-                        text: 'degrees',
+                        text: yaxis,
                     }
                 }
             };
@@ -177,10 +181,10 @@
         $(function(){
             setInterval(update, 1000);
         });
-        updateGraph("/graph/azimuth", 'azimuthDiv', "Turntable Motor");
-        updateGraph("/graph/elevation", 'elevationDiv', "Arm Motor");
-        updateGraph("/graph/dni", 'dniDiv', "Heater Output");
-
+        updateGraph("/graph/azimuth", 'azimuthDiv', "Turntable Motor", "minutes", "degrees");
+        updateGraph("/graph/elevation", 'elevationDiv', "Arm Motor", "minutes", "degrees");
+        updateGraph("/graph/dni", 'dniDiv', "Heater Output", "minutes", "watts/m^2");
+        updateGraph("/graph/temperature", 'temperatureDiv', "Desired Temperature Output", "minutes", "Degrees (C)");
     });
 
 </script>

@@ -5,16 +5,21 @@ from Model import Model
 from datetime import datetime
 from datetime import timedelta
 from RobotTimer import RobotTimer
+from Heater import Heater
 import numpy as np
 from flask import jsonify
 
 
 class Robot:
+
+    SECS_PER_CYCLE = 300  # time each cycle accounts for
+    CYCLE_PERIOD = 2  # time between cycles (in seconds)
+
     def __init__(self):
         print("DEBUG: [ROBOT] Object instantiated")
-        #self.calculate(5, 5, 2000, '12/12/2009')
         self.turntable_motor = TurntableMotor()
         self.arm_motor = ArmMotor()
+        self.heater = None
         self.status = "ready"  # status = ready/calculating/resetting/running/done
         self.model = None
         self.lat = 0
@@ -31,9 +36,7 @@ class Robot:
         self.elevation_arr = None
         self.dni_arr = None
 
-        self.SECS_PER_CYCLE = 300  # time each cycle accounts for
-        self.CYCLE_PERIOD = 2  # time between cycles
-
+    # Create the Model object based off the given parameters and calculate the data arrays for each motor
     def calculate(self, lat, lon, elevation, date, speaker_color):
         self.status = "calculating"
 
@@ -51,6 +54,9 @@ class Robot:
             self.total_seconds = len(self.azimuth_arr)
             self.start_date = datetime.now()
             self.speaker_color = speaker_color
+
+            # Initialize the heater
+            self.heater = Heater(self.dni_arr, self.SECS_PER_CYCLE)
 
             # multiply dni by *.38 if its white
             if self.speaker_color == "white":
@@ -83,15 +89,15 @@ class Robot:
         self.turntable_motor.set_degrees(self.azimuth_arr[self.current_seconds])
         self.arm_motor.set_degrees(self.elevation_arr[self.current_seconds])
         self.current_seconds += self.SECS_PER_CYCLE
+        self.heater.step()
         if self.current_seconds > len(self.azimuth_arr):
             self.timer.event.set()
             self.status = "completed"
 
     # returns json format of Robot's current state
     def get_state(self):
-        return {
+        state = {
             "status": self.status,
-            #"rotational_motor": self.rotational_motor.get_state(),
             "lat": self.lat,
             "lon": self.lon,
             "elevation": self.elevation,
@@ -103,8 +109,12 @@ class Robot:
             "percentage_complete": int((self.current_seconds / self.total_seconds)*100),
             "turntable": self.turntable_motor.get_state(),
             "arm_motor": self.arm_motor.get_state(),
-            "speaker_color" : self.speaker_color,
+            "speaker_color": self.speaker_color,
         }
+        if self.heater is not None:
+            state["heater"] = self.heater.get_state()
+
+        return state
 
     def get_status(self):
         return self.status
@@ -150,6 +160,15 @@ class Robot:
     def get_dni_graph(self):
         return {
             "y": self.dni_arr[::60].flatten('F').tolist(),
+            "type": "scatter"
+        }
+
+    def get_temperature_graph(self):
+        scale = int(60/self.SECS_PER_CYCLE)
+        if (scale ==  0):
+            scale = 1
+        return {
+            "y": np.array(self.heater.get_desired_temp_arr())[::scale].flatten('F').tolist(),
             "type": "scatter"
         }
 
