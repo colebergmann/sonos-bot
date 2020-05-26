@@ -71,7 +71,13 @@ class Heater:
 
     # private synchronous helper method that runs each time we need to check heater temp
     def __step_sync(self):
-        self.current_step += 1
+
+        # Stop stepping once we have reached the end of the desired_temp array
+        # (for the case where the desired_temp arr is not evenly divisible by secs_per_cycle
+        if self.current_step >= len(self.desired_temp) - 1:
+            return
+        else:
+            self.current_step += 1
         if not on_pi_hardware:
             return
         self.mutex.acquire()
