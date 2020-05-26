@@ -120,8 +120,10 @@
             document.getElementById("armSteps").innerHTML = data.arm_motor.steps_taken;
             document.getElementById("armPUL").innerHTML = data.arm_motor.PUL_pin;
             document.getElementById("armDIR").innerHTML = data.arm_motor.DIR_pin;
-            document.getElementById("currentTemp").innerHTML = data.heater.current_temperature;
-            document.getElementById("referenceTemp").innerHTML = data.heater.reference_temperature;
+            if (data.heater) {
+                document.getElementById("currentTemp").innerHTML = data.heater.current_temperature;
+                document.getElementById("referenceTemp").innerHTML = data.heater.reference_temperature;
+            }
             if (data.status == "ready" || data.status == "calculating" || data.status == "resetting") {
                 location.reload();
             }
