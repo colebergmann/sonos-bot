@@ -140,16 +140,24 @@
     }
 
     $( document ).ready(function() {
-        $.get("/static/presets.json", function(data, status){
-            presets = data
-            // Populate dropdown:
-            for (element in data) {
-                var option = document.createElement("option");
-                option.text = presets[element]["name"];
-                option.id = element
-                document.getElementById("preset").add(option);
-                console.log("Added")
-            }
+        $.get("/json/history", function(data, status){
+            presets = presets.concat(data["history"]);
+
+            // Add static presets
+            $.get("/static/presets.json", function(data, status){
+                presets = presets.concat(data);
+                console.log(presets)
+
+                // Actually add values to page
+                for (i in presets) {
+                    let entry = presets[i]
+                    let option = document.createElement("option");
+                    option.text = entry["name"];
+                    option.id = i
+                    document.getElementById("preset").add(option);
+                    console.log("Added")
+                }
+            });
         });
     });
 

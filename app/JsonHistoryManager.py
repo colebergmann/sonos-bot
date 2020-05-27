@@ -1,24 +1,8 @@
-# from Model import Model
-# import numpy as np
-# import matplotlib.pyplot as plt
-#
-# mdl = Model(12, 12, 100, '06/05/1999') # why is az vertical in the middle of the day? # it inverts after 0 deg
-# #mdl = Model(34.42,-119.82, 6200, '2019-12-06')
-#
-# mdl.trim() # trim the plots to one full cycle of apparent_elevation
-# #mdl.show_plots()
-#
-# mdl.show_plots()
-#
-# arr = mdl.get_dni_arr()
-# print(arr)
-# print(np.multiply(arr, .38))
-
 import json
 
 FILEPATH = "data/history.json"
 
-def save_to_file(lat, lon, elevation, date, speaker_color):
+def save_history_to_file(lat, lon, elevation):
     print("Saving to file")
     arr = []
     new_element = {
@@ -42,7 +26,7 @@ def save_to_file(lat, lon, elevation, date, speaker_color):
 
     # Set names
     for i in range(0, len(arr)):
-        arr[i]["name"] = "Recent 1 - lat:" + str(int(lat)) + ", lon:" + str(int(lon))
+        arr[i]["name"] = "Recent " + str(i + 1) +" - lat:" + str(arr[i]["latitude"]) + ", lon:" + str(arr[i]["longitude"])
 
     # Save
     try:
@@ -58,7 +42,3 @@ def get_history_arr():
             return json.load(data)
     except:
         print("[jsonhelper] Unable to read history json")
-
-save_to_file(5, 6, 7, 8, "black")
-
-print(get_history_arr())

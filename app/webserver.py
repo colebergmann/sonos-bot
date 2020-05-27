@@ -2,6 +2,7 @@ from flask import render_template, Flask, request, redirect, session
 from Robot import Robot
 import pandas as pd
 from threading import Thread
+from JsonHistoryManager import save_history_to_file, get_history_arr
 
 app = Flask(__name__)
 
@@ -70,13 +71,18 @@ def getElevationGraph():
 
 @app.route('/graph/dni')
 def getDniGraph():
-    arr  = robot.get_dni_graph()
-    print(arr)
+    arr = robot.get_dni_graph()
     return arr
 
 @app.route('/graph/temperature')
 def getTemperatureGraph():
     return robot.get_temperature_graph()
+
+@app.route('/json/history')
+def getHistory():
+    return {
+        "history": get_history_arr()
+    }
 
 @app.route('/setstatus/<string:s>', methods=["POST"])
 def setState(s):
@@ -114,6 +120,11 @@ def submit_params():
     Thread(target=robot.calculate, args=[float(request.json.get("lat")), float(request.json.get("lon")),
                                          float(request.json.get("elevation")), request.json.get("date"),
                                          request.json.get("speaker_color")]).start()
+
+    save_history_to_file(float(request.json.get("lat")), float(request.json.get("lon")), float(request.json.get("elevation")))
+
+    # Write the submitted data to a file so we can pull it for recent submissions
+
     return {"status": "success"}
 
 
