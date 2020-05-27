@@ -18,6 +18,18 @@
         "elevation": 610
     },
     {
+        "name": "Death Valley, CA, USA",
+        "latitude": 36.5,
+        "longitude": -116.52,
+        "elevation": 51
+    },
+    {
+        "name": "La Paz, BOL",
+        "latitude": -16.4897,
+        "longitude": -68.1193,
+        "elevation": 3.639
+    },
+    {
         "name": "Los Angeles, CA, USA",
         "latitude": 34.3,
         "longitude": -118.15,
@@ -28,12 +40,6 @@
         "latitude": 37.47,
         "longitude": -122.26,
         "elevation": 0
-    },
-    {
-        "name": "Death Valley, CA, USA",
-        "latitude": 36.5,
-        "longitude": -116.52,
-        "elevation": 51
     },
     {
         "name": "Denver, CO, USA",
@@ -87,6 +93,18 @@
         "name": "Shanghai, CHN",
         "latitude": 31.10,
         "longitude": 121.28,
+        "elevation": 0
+    },
+    {
+        "name": "Seoul, KOR",
+        "latitude": 37.5665,
+        "longitude": 126.9780,
+        "elevation": 0
+    },
+    {
+        "name": "Kuala Lumpur, MYS",
+        "latitude": 3.1390,
+        "longitude": 101.6869,
         "elevation": 0
     },
     {
