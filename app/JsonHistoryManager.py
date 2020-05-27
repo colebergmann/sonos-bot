@@ -1,6 +1,8 @@
 import json
+import os
 
-FILEPATH = "data/history.json"
+dirname = os.path.dirname(__file__)
+FILEPATH = os.path.join(dirname, "data/history.json")
 
 def save_history_to_file(lat, lon, elevation):
     print("Saving to file")
